@@ -8,10 +8,10 @@ const paramsSchema = Joi.object({
 });
 
 const outputSchema = Joi.object({
-  ranking: Joi.number().required(),
+  id: Joi.number().required(),
+  ranking: Joi.string().required(),
   name: Joi.string().required(),
   singer: Joi.string().required(),
-  timezone: Joi.string().required(),
   album: Joi.string().required(),
   publisher: Joi.string().required(),
   agency: Joi.string().required(),
