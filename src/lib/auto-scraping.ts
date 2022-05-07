@@ -1,122 +1,166 @@
-import axios from "axios";
-import * as cheerio from "cheerio";
 import { JsonDB } from "node-json-db";
 import { Config } from "node-json-db/dist/lib/JsonDBConfig";
+import { Builder, By, until } from "selenium-webdriver";
 
 export const musicDB = new JsonDB(new Config("musicDB", true, false, "/"));
 
-const getHtml = (url: string) => {
-  try {
-    return axios.get(url);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 export const autoScraping = async () => {
-  const melon = await getHtml("https://www.melon.com/chart/index.htm").then(
-    (html) => {
-      const $ = cheerio.load(html.data);
-      const musicList50 = $("#lst50").toArray();
-      const musicList100 = $("#lst100").toArray();
+  const melon = async () => {
+    const driver = await new Builder().forBrowser("chrome").build();
+
+    try {
+      await driver.get("https://www.melon.com/chart/index.htm");
+
+      const musicList50 = await driver.findElements(By.css("#lst50"));
+      const musicList100 = await driver.findElements(By.css("#lst100"));
 
       const musicList = [...musicList50, ...musicList100];
 
-      const result = [];
+      const result = await Promise.all(
+        musicList.map(async (tr, i) => {
+          const ranking = await tr.findElement(
+            By.css("td:nth-child(2) > div > span.rank")
+          );
+          const name = await tr.findElement(
+            By.css(
+              "td:nth-child(6) > div > div > div.ellipsis.rank01 > span > a"
+            )
+          );
+          const singer = await tr.findElement(
+            By.css("td:nth-child(6) > div > div > div.ellipsis.rank02 > a")
+          );
+          const album = await tr.findElement(
+            By.css("td:nth-child(7) > div > div > div > a")
+          );
 
-      musicList.forEach((tr, i) => {
-        const ranking = $(tr).find("td:nth-child(2) > div > span.rank").text();
-        const name = $(tr)
-          .find("td:nth-child(6) > div > div > div.ellipsis.rank01 > span > a")
-          .text();
-        const singer = $(tr)
-          .find("td:nth-child(6) > div > div > div.ellipsis.rank02 > a")
-          .text();
-        const album = $(tr)
-          .find("td:nth-child(7) > div > div > div > a")
-          .text();
-
-        result.push({
-          id: i,
-          ranking,
-          name,
-          singer,
-          album,
-        });
-      });
-      return result;
-    }
-  );
-
-  const genie = await getHtml("https://www.genie.co.kr/chart/top200").then(
-    (html) => {
-      const $ = cheerio.load(html.data);
-      const musicList = $(
-        "#body-content > div.newest-list > div > table > tbody > tr"
-      ).toArray();
-
-      const result = [];
-
-      musicList.forEach((tr, i) => {
-        const ranking = $(tr).find("td.number").text().split("\n")[0];
-        const name = $(tr)
-          .find("td.info > a.title.ellipsis")
-          .text()
-          .replace(/\n/g, "")
-          .trim();
-        const singer = $(tr).find("td.info > a.artist.ellipsis").text();
-        const album = $(tr).find("td.info > a.albumtitle.ellipsis").text();
-
-        result.push({
-          id: i,
-          ranking,
-          name,
-          singer,
-          album,
-        });
-      });
+          return {
+            id: i,
+            ranking: await ranking.getText(),
+            name: await name.getText(),
+            singer: await singer.getText(),
+            album: await album.getText(),
+          };
+        })
+      );
 
       return result;
+    } catch (err) {
+      console.log(err);
+    } finally {
+      driver.quit();
     }
-  );
+  };
 
-  const vibe = await getHtml("https://vibe.naver.com/chart/total").then(
-    (html) => {
-      const $ = cheerio.load(html.data);
-      const musicList = $(
-        "#content > div.track_section > div:nth-child(2) > div > table > tbody > tr"
-      ).toArray();
+  const genie = async () => {
+    const driver = await new Builder().forBrowser("chrome").build();
 
-      console.log(musicList);
+    try {
+      await driver.get("https://www.genie.co.kr/chart/top200");
 
-      const result = [];
+      const musicList = await driver.findElements(
+        By.css("#body-content > div.newest-list > div > table > tbody > tr")
+      );
 
-      musicList.forEach((tr, i) => {
-        const ranking = $(tr).find("td.rank > span").text();
-        const name = $(tr)
-          .find("td.song > div.title_badge_wrap > span > a")
-          .text();
-        const singer = $(tr)
-          .find(
-            "td.song > div.artist_sub > span:nth-child(1) > span > a > span"
+      const result = await Promise.all(
+        musicList.map(async (tr, i) => {
+          const ranking = await tr.findElement(By.css("td.number"));
+          const name = await tr.findElement(
+            By.css("td.info > a.title.ellipsis")
+          );
+          const singer = await tr.findElement(
+            By.css("td.info > a.artist.ellipsis")
+          );
+          const album = await tr.findElement(
+            By.css("td.info > a.albumtitle.ellipsis")
+          );
+
+          return {
+            id: i,
+            ranking: await ranking.getText(),
+            name: await name.getText(),
+            singer: await singer.getText(),
+            album: await album.getText(),
+          };
+        })
+      );
+
+      return result;
+    } catch (err) {
+      console.log(err);
+    } finally {
+      driver.quit();
+    }
+  };
+
+  const vibe = async () => {
+    const driver = await new Builder().forBrowser("chrome").build();
+
+    await driver
+      .manage()
+      .window()
+      .setRect({ x: 0, y: 0, width: 1500, height: 800 });
+
+    try {
+      await driver.get("https://vibe.naver.com/chart/total");
+
+      await driver.wait(
+        until.elementLocated(
+          By.css(`#app > div.modal > div > div > a.btn_close`)
+        ),
+        20000
+      );
+      const closetButton = driver.findElement(
+        By.css(`#app > div.modal > div > div > a.btn_close`)
+      );
+      await driver.wait(until.elementIsEnabled(closetButton), 20000);
+      await closetButton.click();
+
+      // css selector로 가져온 element가 위치할때까지 최대 10초간 기다린다.
+      await driver.wait(
+        until.elementLocated(
+          By.css(
+            "#content > div.track_section > div:nth-child(2) > div > table > tbody"
           )
-          .text();
-        const album = $(tr).find("td.album > a").text();
+        ),
+        10000
+      );
 
-        result.push({
-          id: i,
-          ranking,
-          name,
-          singer,
-          album,
-        });
-      });
+      const resultElements = await driver.findElements(
+        By.css(
+          "#content > div.track_section > div:nth-child(2) > div > table > tbody > tr"
+        )
+      );
+
+      const result = await Promise.all(
+        resultElements.map(async (tr, i) => {
+          const ranking = await tr.findElement(By.className("rank"));
+          const name = await tr.findElement(By.className("inner_cell"));
+          const singer = await tr.findElement(By.className("artist"));
+          const album = await tr.findElement(By.css("td.album > a"));
+
+          return {
+            id: i,
+            ranking: (await ranking.getText()).split("\n")[0],
+            name: await name.getText(),
+            singer: await singer.getText(),
+            album: await album.getText(),
+          };
+        })
+      );
 
       return result;
+    } catch (err) {
+      console.log(err);
+    } finally {
+      driver.quit();
     }
-  );
+  };
 
-  musicDB.push("/melon/musicSummary", melon);
-  musicDB.push("/genie/musicSummary", genie);
-  musicDB.push("/vibe/musicSummary", vibe);
+  const melonList = await melon();
+  const genieList = await genie();
+  const vibeList = await vibe();
+
+  musicDB.push("/melon/musicSummary", melonList);
+  musicDB.push("/genie/musicSummary", genieList);
+  musicDB.push("/vibe/musicSummary", vibeList);
 };
