@@ -36,6 +36,6 @@ export default {
 
     const musics = await musicChartService.getList(vendor);
 
-    ctx.body = musics.musicSummary;
+    ctx.body = musics;
   },
 } as Spec;
