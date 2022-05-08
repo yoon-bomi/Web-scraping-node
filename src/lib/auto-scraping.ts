@@ -11,10 +11,9 @@ export const autoScraping = async () => {
     try {
       await driver.get("https://www.melon.com/chart/index.htm");
 
-      const musicList50 = await driver.findElements(By.css("#lst50"));
-      const musicList100 = await driver.findElements(By.css("#lst100"));
-
-      const musicList = [...musicList50, ...musicList100];
+      const musicList = await driver.findElements(
+        By.css("#frm > div > table > tbody > tr")
+      );
 
       const result = await Promise.all(
         musicList.map(async (tr, i) => {
