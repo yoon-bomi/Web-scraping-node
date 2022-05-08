@@ -213,8 +213,8 @@ export const autoScraping = async () => {
         "td.song > div.title_badge_wrap > span > a",
         "td.artist > span > span > span > a > span",
         "td.album > a",
-        "#content > div:nth-child(1) > div.summary_section > div.summary > div.text_area > div.info > div > a",
-        "#content > div:nth-child(1) > div.summary_section > div.summary > div.text_area > div.info > div > a",
+        "#app > div.modal > div > div > div.ly_contents > div > table > tbody > tr:nth-child(1) > td",
+        "#app > div.modal > div > div > div.ly_contents > div > table > tbody > tr:nth-child(2) > td",
       ];
 
       const musics = [...Array(musicList.length)].map((e, i) => i);
@@ -251,56 +251,71 @@ export const autoScraping = async () => {
 
         await albumElement.sendKeys(Key.ENTER);
 
-        await driver.wait(until.elementLocated(By.css(selectors[4])), 10000);
-
-        const moreButton = await driver.findElement(
-          By.css(
-            "#content > div:nth-child(1) > div.summary_section > div.summary > div.text_area > div.info > div > a"
-          )
-        );
+        console.log(name);
 
         let publisher = "unknown";
         let agency = "unknown";
 
-        await driver.sleep(1500);
-
-        if (await moreButton.isDisplayed()) {
-          await driver.wait(until.elementIsVisible(await moreButton), 10000);
-
-          await moreButton.sendKeys(Key.ENTER);
-
-          const publisherElement = await driver.findElement(
-            By.css(selectors[4])
-          );
-          publisher = await publisherElement.getText();
-
-          const agencyElement = await driver.findElement(By.css(selectors[4]));
-          agency = await agencyElement.getText();
-
-          const closeButton = await driver.findElement(
-            By.css("#app > div.modal > div > div > a")
+        try {
+          await driver.wait(
+            until.elementLocated(
+              By.css(
+                "#content > div:nth-child(1) > div.summary_section > div.summary > div.option_area > div > div.more_option > div > a"
+              )
+            ),
+            10000
           );
 
-          await closeButton.sendKeys(Key.ENTER);
+          const moreButton = await driver.findElement(
+            By.css(
+              "#content > div:nth-child(1) > div.summary_section > div.summary > div.text_area > div.info > div > a"
+            )
+          );
+
+          await driver.sleep(1500);
+
+          if (await moreButton.isDisplayed()) {
+            await driver.wait(until.elementIsVisible(await moreButton), 10000);
+
+            await moreButton.sendKeys(Key.ENTER);
+
+            const publisherElement = await driver.findElement(
+              By.css(selectors[4])
+            );
+            publisher = await publisherElement.getText();
+
+            const agencyElement = await driver.findElement(
+              By.css(selectors[4])
+            );
+            agency = await agencyElement.getText();
+
+            const closeButton = await driver.findElement(
+              By.css("#app > div.modal > div > div > a")
+            );
+
+            await closeButton.sendKeys(Key.ENTER);
+          }
+        } catch (NoSuchElementException) {
+          console.log(`There is no More button - ${name}`);
+        } finally {
+          await result.push({
+            id: i,
+            musicSummary: {
+              ranking: Number(ranking.split("\n")[0]),
+              name,
+              singer,
+              album,
+            },
+            musicDetail: {
+              publisher,
+              agency,
+            },
+          });
+
+          await driver.navigate().back();
+
+          await driver.sleep(3000);
         }
-
-        await result.push({
-          id: i,
-          musicSummary: {
-            ranking: Number(ranking.split("\n")[0]),
-            name,
-            singer,
-            album,
-          },
-          musicDetail: {
-            publisher,
-            agency,
-          },
-        });
-
-        await driver.navigate().back();
-
-        await driver.sleep(3000);
       }
 
       return result;
@@ -308,15 +323,15 @@ export const autoScraping = async () => {
       console.log(err);
       Sentry.captureException(err);
     } finally {
-      driver.quit();
+      // driver.quit();
     }
   };
 
-  const melonList = await melon();
-  const genieList = await genie();
+  // const melonList = await melon();
+  // const genieList = await genie();
   const vibeList = await vibe();
 
-  musicDB.push("/melon", melonList);
-  musicDB.push("/genie", genieList);
+  // musicDB.push("/melon", melonList);
+  // musicDB.push("/genie", genieList);
   musicDB.push("/vibe", vibeList);
 };
