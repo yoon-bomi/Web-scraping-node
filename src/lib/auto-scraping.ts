@@ -41,7 +41,7 @@ export const autoScraping = async () => {
 
       const result: musicInfo[] = [];
 
-      for (const music of musicList.splice(0, 5)) {
+      for (const music of musicList) {
         const rankingElement = await music.findElement(By.css(selectors[0]));
         const ranking = await rankingElement.getText();
 
@@ -76,7 +76,7 @@ export const autoScraping = async () => {
           },
         });
 
-        // await driver.navigate().back();
+        await driver.navigate().back();
 
         await driver.sleep(3000);
       }
@@ -113,7 +113,7 @@ export const autoScraping = async () => {
 
       const result: musicInfo[] = [];
 
-      for (const i of musics.slice(10, 15)) {
+      for (const i of musics) {
         const musics = await driver.findElements(
           By.css("#body-content > div.newest-list > div > table > tbody > tr")
         );
@@ -221,7 +221,7 @@ export const autoScraping = async () => {
 
       const result: musicInfo[] = [];
 
-      for (const i of musics.slice(2, 7)) {
+      for (const i of musics) {
         const musics = await driver.findElements(
           By.css(
             "#content > div.track_section > div:nth-child(2) > div > table > tbody > tr"
@@ -244,31 +244,45 @@ export const autoScraping = async () => {
         const albumElement = await music.findElement(By.css(selectors[3]));
         const album = await albumElement.getText();
 
-        await driver.executeScript(`scroll(${i * 10}, ${250 - i * 10})`);
+        await driver.executeScript(
+          "arguments[0].scrollIntoView()",
+          albumElement
+        );
 
         await albumElement.sendKeys(Key.ENTER);
 
         await driver.wait(until.elementLocated(By.css(selectors[4])), 10000);
 
-        const moreButton = await driver.findElement(By.css(selectors[5]));
-
-        await driver.wait(until.elementIsVisible(await moreButton), 10000);
-
-        await moreButton.sendKeys(Key.ENTER);
-
-        const publisherElement = await driver.findElement(
+        const moreButton = await driver.findElement(
           By.css(
-            "#app > div.modal > div > div > div.ly_contents > div > table > tbody > tr:nth-child(1) > td"
+            "#content > div:nth-child(1) > div.summary_section > div.summary > div.text_area > div.info > div > a"
           )
         );
-        const publisher = await publisherElement.getText();
 
-        const agencyElement = await driver.findElement(
-          By.css(
-            "#app > div.modal > div > div > div.ly_contents > div > table > tbody > tr:nth-child(2) > td"
-          )
-        );
-        const agency = await agencyElement.getText();
+        let publisher = "unknown";
+        let agency = "unknown";
+
+        await driver.sleep(1500);
+
+        if (await moreButton.isDisplayed()) {
+          await driver.wait(until.elementIsVisible(await moreButton), 10000);
+
+          await moreButton.sendKeys(Key.ENTER);
+
+          const publisherElement = await driver.findElement(
+            By.css(selectors[4])
+          );
+          publisher = await publisherElement.getText();
+
+          const agencyElement = await driver.findElement(By.css(selectors[4]));
+          agency = await agencyElement.getText();
+
+          const closeButton = await driver.findElement(
+            By.css("#app > div.modal > div > div > a")
+          );
+
+          await closeButton.sendKeys(Key.ENTER);
+        }
 
         await result.push({
           id: i,
@@ -283,12 +297,6 @@ export const autoScraping = async () => {
             agency,
           },
         });
-
-        const closeButton = await driver.findElement(
-          By.css("#app > div.modal > div > div > a")
-        );
-
-        await closeButton.sendKeys(Key.ENTER);
 
         await driver.navigate().back();
 
