@@ -1,4 +1,5 @@
 import { JsonDB } from "node-json-db";
+import * as Sentry from "@sentry/node";
 import { Config } from "node-json-db/dist/lib/JsonDBConfig";
 import { Builder, By, Key, until } from "selenium-webdriver";
 
@@ -75,7 +76,7 @@ export const autoScraping = async () => {
           },
         });
 
-        await driver.navigate().back();
+        // await driver.navigate().back();
 
         await driver.sleep(3000);
       }
@@ -83,6 +84,7 @@ export const autoScraping = async () => {
       return result;
     } catch (err) {
       console.log(err);
+      Sentry.captureException(err);
     } finally {
       driver.quit();
     }
@@ -162,6 +164,7 @@ export const autoScraping = async () => {
       return result;
     } catch (err) {
       console.log(err);
+      Sentry.captureException(err);
     } finally {
       driver.quit();
     }
@@ -295,6 +298,7 @@ export const autoScraping = async () => {
       return result;
     } catch (err) {
       console.log(err);
+      Sentry.captureException(err);
     } finally {
       driver.quit();
     }

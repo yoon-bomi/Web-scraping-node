@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import * as Sentry from "@sentry/node";
 import * as Koa from "koa";
 import * as cors from "@koa/cors";
 import { router } from "./routes";
@@ -13,6 +14,13 @@ function startInterval(callback) {
 }
 
 (async () => {
+  require("dotenv").config();
+
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    tracesSampleRate: 1.0,
+  });
+
   const app = new Koa();
 
   app.use(cors());
