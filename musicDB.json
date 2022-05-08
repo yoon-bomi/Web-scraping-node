@@ -1,0 +1,149 @@
+{
+  "melon": {
+    "musicSummary": [
+      {
+        "id": 0,
+        "ranking": 1,
+        "name": "봄여름가을겨울 (Still Life)",
+        "singer": "BIGBANG (빅뱅)",
+        "album": "봄여름가을겨울 (Still Life)",
+        "publisher": "YG PLUS",
+        "agency": "YG Entertainment"
+      },
+      {
+        "id": 1,
+        "ranking": 2,
+        "name": "That That (prod. & feat. SUGA of BTS)",
+        "singer": "싸이 (PSY)",
+        "album": "싸다9",
+        "publisher": "Dreamus",
+        "agency": "P NATION"
+      },
+      {
+        "id": 2,
+        "ranking": 3,
+        "name": "LOVE DIVE",
+        "singer": "IVE (아이브)",
+        "album": "LOVE DIVE",
+        "publisher": "카카오엔터테인먼트",
+        "agency": "스타쉽엔터테인먼트"
+      },
+      {
+        "id": 3,
+        "ranking": 4,
+        "name": "TOMBOY",
+        "singer": "(여자)아이들",
+        "album": "I NEVER DIE",
+        "publisher": "카카오엔터테인먼트",
+        "agency": "큐브 엔터테인먼트"
+      },
+      {
+        "id": 4,
+        "ranking": 5,
+        "name": "사랑인가 봐",
+        "singer": "멜로망스",
+        "album": "사랑인가 봐 (사내맞선 OST 스페셜 트랙)",
+        "publisher": "카카오엔터테인먼트",
+        "agency": "플렉스엠"
+      }
+    ]
+  },
+  "genie": {
+    "musicSummary": [
+      {
+        "id": 10,
+        "ranking": 11,
+        "name": "신호등",
+        "singer": "이무진",
+        "album": "신호등",
+        "publisher": "카카오엔터테인먼트",
+        "agency": "쇼플레이엔터테인먼트"
+      },
+      {
+        "id": 11,
+        "ranking": 12,
+        "name": "취중고백",
+        "singer": "김민석 (멜로망스)",
+        "album": "취중고백",
+        "publisher": "워너뮤직",
+        "agency": "프로젝트 리본"
+      },
+      {
+        "id": 12,
+        "ranking": 13,
+        "name": "듣고 싶을까",
+        "singer": "MSG워너비 (M.O.M)",
+        "album": "듣고 싶을까",
+        "publisher": "지니뮤직, Stone Music Entertainment",
+        "agency": "문화방송"
+      },
+      {
+        "id": 13,
+        "ranking": 14,
+        "name": "우리들의 블루스",
+        "singer": "임영웅",
+        "album": "IM HERO",
+        "publisher": "Dreamus",
+        "agency": "물고기뮤직"
+      },
+      {
+        "id": 14,
+        "ranking": 15,
+        "name": "다정히 내 이름을 부르면",
+        "singer": "경서예지 & 전건호",
+        "album": "다정히 내 이름을 부르면 (경서예지 x 전건호)",
+        "publisher": "카카오엔터테인먼트",
+        "agency": "에버그로우"
+      }
+    ]
+  },
+  "vibe": {
+    "musicSummary": [
+      {
+        "id": 2,
+        "ranking": 3,
+        "name": "TOMBOY",
+        "singer": "(여자) 아이들",
+        "album": "I NEVER DIE",
+        "publisher": "카카오엔터테인먼트",
+        "agency": "큐브 엔터테인먼트"
+      },
+      {
+        "id": 3,
+        "ranking": 4,
+        "name": "봄여름가을겨울 (Still Life)",
+        "singer": "BIGBANG (빅뱅)",
+        "album": "봄여름가을겨울 (Still Life)",
+        "publisher": "YG PLUS",
+        "agency": "YG Entertainment"
+      },
+      {
+        "id": 4,
+        "ranking": 5,
+        "name": "Feel My Rhythm",
+        "singer": "Red Velvet (레드벨벳)",
+        "album": "'The ReVe Festival 2022 - Feel My Rhythm'",
+        "publisher": "Dreamus",
+        "agency": "SM ENTERTAINMENT"
+      },
+      {
+        "id": 5,
+        "ranking": 6,
+        "name": "사랑인가 봐",
+        "singer": "멜로망스(Melomance)",
+        "album": "사랑인가 봐 (사내맞선 OST 스페셜 트랙)",
+        "publisher": "카카오엔터테인먼트",
+        "agency": "플렉스엠"
+      },
+      {
+        "id": 6,
+        "ranking": 7,
+        "name": "신호등",
+        "singer": "이무진",
+        "album": "신호등",
+        "publisher": "카카오엔터테인먼트",
+        "agency": "쇼플레이엔터테인먼트"
+      }
+    ]
+  }
+}
