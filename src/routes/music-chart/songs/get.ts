@@ -10,7 +10,7 @@ const outputSchema = Joi.array()
   .items(
     Joi.object({
       id: Joi.number().required(),
-      ranking: Joi.string().required(),
+      ranking: Joi.number().required(),
       name: Joi.string().required(),
       singer: Joi.string().required(),
       album: Joi.string().required(),
