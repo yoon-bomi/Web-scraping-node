@@ -4,12 +4,16 @@ import { Builder, By, Key, until } from "selenium-webdriver";
 
 type musicInfo = {
   id: number;
-  ranking: number;
-  name: string;
-  singer: string;
-  album: string;
-  publisher: string;
-  agency: string;
+  musicSummary: {
+    ranking: number;
+    name: string;
+    singer: string;
+    album: string;
+  };
+  musicDetail: {
+    publisher: string;
+    agency: string;
+  };
 };
 
 export const musicDB = new JsonDB(new Config("musicDB", true, false, "/"));
@@ -39,7 +43,6 @@ export const autoScraping = async () => {
       for (const music of musicList.splice(0, 5)) {
         const rankingElement = await music.findElement(By.css(selectors[0]));
         const ranking = await rankingElement.getText();
-        console.log(ranking);
 
         const nameElement = await music.findElement(By.css(selectors[1]));
         const name = await nameElement.getText();
@@ -60,12 +63,16 @@ export const autoScraping = async () => {
 
         await result.push({
           id: Number(ranking) - 1,
-          ranking: Number(ranking),
-          name,
-          singer,
-          album,
-          publisher,
-          agency,
+          musicSummary: {
+            ranking: Number(ranking),
+            name,
+            singer,
+            album,
+          },
+          musicDetail: {
+            publisher,
+            agency,
+          },
         });
 
         await driver.navigate().back();
@@ -111,13 +118,10 @@ export const autoScraping = async () => {
 
         const music = await musics[i];
 
-        console.log(await music.getText());
-
         await driver.wait(until.elementIsEnabled(await music), 10000);
 
         const rankingElement = await music.findElement(By.css(selectors[0]));
         const ranking = await rankingElement.getText();
-        console.log(ranking);
 
         const nameElement = await music.findElement(By.css(selectors[1]));
         const name = await nameElement.getText();
@@ -138,12 +142,16 @@ export const autoScraping = async () => {
 
         await result.push({
           id: i,
-          ranking: Number(ranking.split("\n")[0]),
-          name,
-          singer,
-          album,
-          publisher,
-          agency,
+          musicSummary: {
+            ranking: Number(ranking.split("\n")[0]),
+            name,
+            singer,
+            album,
+          },
+          musicDetail: {
+            publisher,
+            agency,
+          },
         });
 
         await driver.navigate().back();
@@ -219,13 +227,10 @@ export const autoScraping = async () => {
 
         const music = await musics[i];
 
-        console.log(await music.getText());
-
         await driver.wait(until.elementIsEnabled(await music), 10000);
 
         const rankingElement = await music.findElement(By.css(selectors[0]));
         const ranking = await rankingElement.getText();
-        console.log(ranking);
 
         const nameElement = await music.findElement(By.css(selectors[1]));
         const name = await nameElement.getText();
@@ -264,12 +269,16 @@ export const autoScraping = async () => {
 
         await result.push({
           id: i,
-          ranking: Number(ranking.split("\n")[0]),
-          name,
-          singer,
-          album,
-          publisher,
-          agency,
+          musicSummary: {
+            ranking: Number(ranking.split("\n")[0]),
+            name,
+            singer,
+            album,
+          },
+          musicDetail: {
+            publisher,
+            agency,
+          },
         });
 
         const closeButton = await driver.findElement(
@@ -295,7 +304,7 @@ export const autoScraping = async () => {
   const genieList = await genie();
   const vibeList = await vibe();
 
-  musicDB.push("/melon/musicSummary", melonList);
-  musicDB.push("/genie/musicSummary", genieList);
-  musicDB.push("/vibe/musicSummary", vibeList);
+  musicDB.push("/melon", melonList);
+  musicDB.push("/genie", genieList);
+  musicDB.push("/vibe", vibeList);
 };
