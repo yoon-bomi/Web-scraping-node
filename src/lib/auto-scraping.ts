@@ -76,7 +76,7 @@ export const autoScraping = async () => {
 
           return {
             id: i,
-            ranking: await ranking.getText(),
+            ranking: await (await ranking.getText()).split("\n")[0],
             name: await name.getText(),
             singer: await singer.getText(),
             album: await album.getText(),
