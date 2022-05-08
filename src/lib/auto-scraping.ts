@@ -2,7 +2,7 @@ import { JsonDB } from "node-json-db";
 import { Config } from "node-json-db/dist/lib/JsonDBConfig";
 import { Builder, By, Key, until } from "selenium-webdriver";
 
-type musicInfo = {
+export type musicInfo = {
   id: number;
   musicSummary: {
     ranking: number;
