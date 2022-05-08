@@ -1,11 +1,7 @@
-import { musicDB } from "../../../lib/auto-scraping";
+import { musicDB, musicInfo } from "../../../lib/auto-scraping";
 
 export class MusicChartRepository {
-  getMusicSummary(vendor: string) {
-    return musicDB.getData(`/${vendor}/musicSummary`);
-  }
-
-  getMusicDetail(vendor: string) {
-    return musicDB.getData(`/${vendor}/musicDetail`);
+  getMusicInfos(vendor: string): musicInfo[] {
+    return musicDB.getData(`/${vendor}`);
   }
 }
