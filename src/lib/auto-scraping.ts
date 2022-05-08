@@ -15,32 +15,59 @@ export const autoScraping = async () => {
         By.css("#frm > div > table > tbody > tr")
       );
 
-      const result = await Promise.all(
-        musicList.map(async (tr, i) => {
-          const ranking = await tr.findElement(
-            By.css("td:nth-child(2) > div > span.rank")
-          );
-          const name = await tr.findElement(
-            By.css(
-              "td:nth-child(6) > div > div > div.ellipsis.rank01 > span > a"
-            )
-          );
-          const singer = await tr.findElement(
-            By.css("td:nth-child(6) > div > div > div.ellipsis.rank02 > a")
-          );
-          const album = await tr.findElement(
-            By.css("td:nth-child(7) > div > div > div > a")
-          );
+      const result = [];
 
-          return {
-            id: i,
-            ranking: await ranking.getText(),
-            name: await name.getText(),
-            singer: await singer.getText(),
-            album: await album.getText(),
-          };
-        })
-      );
+      for (const music of musicList) {
+        const rankingElement = await music.findElement(
+          By.css("td:nth-child(2) > div > span.rank")
+        );
+        const ranking = await rankingElement.getText();
+
+        const nameElement = await music.findElement(
+          By.css("td:nth-child(6) > div > div > div.ellipsis.rank01 > span > a")
+        );
+        const name = await nameElement.getText();
+
+        const singerElement = await music.findElement(
+          By.css("td:nth-child(6) > div > div > div.ellipsis.rank02 > a")
+        );
+        const singer = await singerElement.getText();
+
+        const albumElement = await music.findElement(
+          By.css("td:nth-child(7) > div > div > div > a")
+        );
+        const album = await albumElement.getText();
+
+        await albumElement.click();
+
+        const publisherElement = await driver.findElement(
+          By.css(
+            "#conts > div.section_info > div > div.entry > div.meta > dl > dd:nth-child(6)"
+          )
+        );
+        const publisher = await publisherElement.getText();
+
+        const agencyElement = await driver.findElement(
+          By.css(
+            "#conts > div.section_info > div > div.entry > div.meta > dl > dd:nth-child(8)"
+          )
+        );
+        const agency = await agencyElement.getText();
+
+        await result.push({
+          id: Number(ranking) - 1,
+          ranking,
+          name,
+          singer,
+          album,
+          publisher,
+          agency,
+        });
+
+        await driver.navigate().back();
+
+        await driver.sleep(3000);
+      }
 
       return result;
     } catch (err) {
@@ -124,14 +151,14 @@ export const autoScraping = async () => {
         10000
       );
 
-      const resultElements = await driver.findElements(
+      const musicList = await driver.findElements(
         By.css(
           "#content > div.track_section > div:nth-child(2) > div > table > tbody > tr"
         )
       );
 
       const result = await Promise.all(
-        resultElements.map(async (tr, i) => {
+        musicList.map(async (tr, i) => {
           const ranking = await tr.findElement(By.className("rank"));
           const name = await tr.findElement(By.className("inner_cell"));
           const singer = await tr.findElement(By.className("artist"));
