@@ -323,15 +323,15 @@ export const autoScraping = async () => {
       console.log(err);
       Sentry.captureException(err);
     } finally {
-      // driver.quit();
+      driver.quit();
     }
   };
 
-  // const melonList = await melon();
-  // const genieList = await genie();
+  const melonList = await melon();
+  const genieList = await genie();
   const vibeList = await vibe();
 
-  // musicDB.push("/melon", melonList);
-  // musicDB.push("/genie", genieList);
+  musicDB.push("/melon", melonList);
+  musicDB.push("/genie", genieList);
   musicDB.push("/vibe", vibeList);
 };
